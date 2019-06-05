@@ -1,0 +1,16 @@
+{{#useHttpClient}}
+import {HttpParams} from '@angular/common/http';
+{{/useHttpClient}}
+
+export type FormParams = { append(param: string, value: any): void; }{{#useHttpClient}} | { append(param: string, value: any): HttpParams; }{{/useHttpClient}};
+
+export function appendMutateFormParams(formParams: { append(param: string, value: any): void; }, param: string, value: any): FormParams {
+  formParams.append(param, value);
+  return formParams;
+}
+
+{{#useHttpClient}}
+export function appendFluentFormParams(formParams: { append(param: string, value: any): HttpParams; }, param: string, value: any): FormParams {
+  return formParams.append(param, value);
+}
+{{/useHttpClient}}
