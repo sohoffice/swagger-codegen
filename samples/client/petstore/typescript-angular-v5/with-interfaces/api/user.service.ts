@@ -15,6 +15,8 @@ import { Inject, Injectable, Optional }                      from '@angular/core
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
+import { appendFluentFormParams, appendMutateFormParams,
+         FormParams}                                         from '../builder';
 
 import { Observable }                                        from 'rxjs/Observable';
 

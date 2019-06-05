@@ -15,6 +15,8 @@ import { Inject, Injectable, Optional }                      from '@angular/core
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
+import { appendFluentFormParams, appendMutateFormParams,
+         FormParams}                                         from '../builder';
 
 import { Observable }                                        from 'rxjs';
 
@@ -67,6 +69,7 @@ export class StoreService {
     public deleteOrder(orderId: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
     public deleteOrder(orderId: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
     public deleteOrder(orderId: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
         if (orderId === null || orderId === undefined) {
             throw new Error('Required parameter orderId was null or undefined when calling deleteOrder.');
         }
@@ -149,6 +152,7 @@ export class StoreService {
     public getOrderById(orderId: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Order>>;
     public getOrderById(orderId: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Order>>;
     public getOrderById(orderId: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
         if (orderId === null || orderId === undefined) {
             throw new Error('Required parameter orderId was null or undefined when calling getOrderById.');
         }
@@ -190,6 +194,7 @@ export class StoreService {
     public placeOrder(body: Order, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Order>>;
     public placeOrder(body: Order, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Order>>;
     public placeOrder(body: Order, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling placeOrder.');
         }

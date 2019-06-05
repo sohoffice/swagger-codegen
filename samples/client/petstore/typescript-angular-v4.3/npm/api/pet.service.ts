@@ -15,6 +15,8 @@ import { Inject, Injectable, Optional }                      from '@angular/core
 import { HttpClient, HttpHeaders, HttpParams,
          HttpResponse, HttpEvent }                           from '@angular/common/http';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
+import { appendFluentFormParams, appendMutateFormParams,
+         FormParams}                                         from '../builder';
 
 import { Observable }                                        from 'rxjs/Observable';
 
@@ -432,20 +434,23 @@ export class PetService {
 
         const canConsumeForm = this.canConsumeForm(consumes);
 
-        let formParams: { append(param: string, value: any): void; };
+        let formParams: FormParams;
+        let appender: (formParams: FormParams, param: string, value: any) => FormParams;
         let useForm = false;
         let convertFormParamsToString = false;
         if (useForm) {
             formParams = new FormData();
+            appender = appendMutateFormParams;
         } else {
             formParams = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+            appender = appendFluentFormParams;
         }
 
         if (name !== undefined) {
-            formParams = formParams.append('name', <any>name) || formParams;
+            formParams = appender(formParams, 'name', <any>name);
         }
         if (status !== undefined) {
-            formParams = formParams.append('status', <any>status) || formParams;
+            formParams = appender(formParams, 'status', <any>status);
         }
 
         return this.httpClient.post<any>(`${this.basePath}/pet/${encodeURIComponent(String(petId))}`,
@@ -505,7 +510,8 @@ export class PetService {
 
         const canConsumeForm = this.canConsumeForm(consumes);
 
-        let formParams: { append(param: string, value: any): void; };
+        let formParams: FormParams;
+        let appender: (formParams: FormParams, param: string, value: any) => FormParams;
         let useForm = false;
         let convertFormParamsToString = false;
         // use FormData to transmit files using content-type "multipart/form-data"
@@ -513,15 +519,17 @@ export class PetService {
         useForm = canConsumeForm;
         if (useForm) {
             formParams = new FormData();
+            appender = appendMutateFormParams;
         } else {
             formParams = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+            appender = appendFluentFormParams;
         }
 
         if (additionalMetadata !== undefined) {
-            formParams = formParams.append('additionalMetadata', <any>additionalMetadata) || formParams;
+            formParams = appender(formParams, 'additionalMetadata', <any>additionalMetadata);
         }
         if (file !== undefined) {
-            formParams = formParams.append('file', <any>file) || formParams;
+            formParams = appender(formParams, 'file', <any>file);
         }
 
         return this.httpClient.post<ApiResponse>(`${this.basePath}/pet/${encodeURIComponent(String(petId))}/uploadImage`,

@@ -16,6 +16,7 @@ import { Http, Headers, URLSearchParams }                    from '@angular/http
 import { RequestMethod, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import { Response, ResponseContentType }                     from '@angular/http';
 import { CustomQueryEncoderHelper }                          from '../encoder';
+import { appendMutateFormParams, FormParams}                 from '../builder';
 
 import { Observable }                                        from 'rxjs/Observable';
 import '../rxjs-operators';
@@ -557,24 +558,27 @@ export class PetService {
 
         const canConsumeForm = this.canConsumeForm(consumes);
 
-        let formParams: { append(param: string, value: any): void; };
+        let formParams: FormParams;
+        let appender: (formParams: FormParams, param: string, value: any) => FormParams;
         let useForm = false;
         let convertFormParamsToString = false;
         if (useForm) {
             formParams = new FormData();
+            appender = appendMutateFormParams;
         } else {
             // TODO: this fails if a parameter is a file, the api can't consume "multipart/form-data" and a blob is passed.
             convertFormParamsToString = true;
             formParams = new URLSearchParams('', new CustomQueryEncoderHelper());
+            appender = appendMutateFormParams;
             // set the content-type explicitly to avoid having it set to 'text/plain'
             headers.set('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
         }
 
         if (name !== undefined) {
-            formParams.append('name', <any>name);
+            appender(formParams, 'name', <any>name);
         }
         if (status !== undefined) {
-            formParams.append('status', <any>status);
+            appender(formParams, 'status', <any>status);
         }
 
         let requestOptions: RequestOptionsArgs = new RequestOptions({
@@ -633,7 +637,8 @@ export class PetService {
 
         const canConsumeForm = this.canConsumeForm(consumes);
 
-        let formParams: { append(param: string, value: any): void; };
+        let formParams: FormParams;
+        let appender: (formParams: FormParams, param: string, value: any) => FormParams;
         let useForm = false;
         let convertFormParamsToString = false;
         // use FormData to transmit files using content-type "multipart/form-data"
@@ -641,19 +646,21 @@ export class PetService {
         useForm = canConsumeForm;
         if (useForm) {
             formParams = new FormData();
+            appender = appendMutateFormParams;
         } else {
             // TODO: this fails if a parameter is a file, the api can't consume "multipart/form-data" and a blob is passed.
             convertFormParamsToString = true;
             formParams = new URLSearchParams('', new CustomQueryEncoderHelper());
+            appender = appendMutateFormParams;
             // set the content-type explicitly to avoid having it set to 'text/plain'
             headers.set('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
         }
 
         if (additionalMetadata !== undefined) {
-            formParams.append('additionalMetadata', <any>additionalMetadata);
+            appender(formParams, 'additionalMetadata', <any>additionalMetadata);
         }
         if (file !== undefined) {
-            formParams.append('file', <any>file);
+            appender(formParams, 'file', <any>file);
         }
 
         let requestOptions: RequestOptionsArgs = new RequestOptions({

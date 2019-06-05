@@ -16,6 +16,7 @@ import { Http, Headers, URLSearchParams }                    from '@angular/http
 import { RequestMethod, RequestOptions, RequestOptionsArgs } from '@angular/http';
 import { Response, ResponseContentType }                     from '@angular/http';
 import { CustomQueryEncoderHelper }                          from '../encoder';
+import { appendMutateFormParams, FormParams}                 from '../builder';
 
 import { Observable }                                        from 'rxjs/Observable';
 import '../rxjs-operators';
